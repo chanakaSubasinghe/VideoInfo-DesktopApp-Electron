@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vide Info</title>
+</head>
+
+<body>
+    <h1>Video Info</h1>
+    <form>
+        <div>
+            <label>Select Video</label>
+            <input type="file" accept="Video/*">
+        </div>
+        <button type="submit">Get Info</button>
+
+        <h2 id="result"></h2>
+    </form>
+
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const { path } = document.querySelector('input').files[0];
+
+            // send the message to electron app
+            ipcRenderer.send('video:submit', path);
+        });
+
+        ipcRenderer.on('video:duration', (event, duration) => {
+            const result = document.querySelector('#result');
+            result.innerHTML = `Video duration is ${Math.floor(duration)} seconds`;
+        });
+    </script>
+</body>
+
+</html>
